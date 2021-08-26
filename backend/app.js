@@ -7,31 +7,6 @@ var logger = require('morgan');
 var playtimeRouter = require('./routes/playtime');
 var playersRouter = require('./routes/players');
 
-var fs = require('fs');
-
-function jsonReader(filePath, callback) {
-  fs.readFile(filePath, (err, fileData) => {
-    if (err) {
-      return callback && callback(err);
-    }
-    try {
-      const object = JSON.parse(fileData);
-      return callback && callback(null, object);
-    } catch (err) {
-      return callback && callback(err);
-    }
-  });
-}
-
-jsonReader('./public/data/games.json', (err, games) => {
-  if(err) {
-    console.log(err);
-  }
-  else {
-    console.log(games.data[0].game)
-  }
-})
-
 var app = express();
 
 // view engine setup
