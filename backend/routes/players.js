@@ -6,7 +6,11 @@ var fs = require('fs');
 
 /* GET games with the highest number of unique players */
 router.get('/', function(req, res, next) {
+
   let games;
+  let queryGenre = req.query.genre;
+  let queryPlatform = req.query.platform;
+  let users = [];
 
   try {
     const jsonString = fs.readFileSync('./public/data/games.json');
@@ -19,7 +23,6 @@ router.get('/', function(req, res, next) {
   let group = lodash.groupBy(games.data, 'game');
   let reduce = lodash.reduce(group, function(result, value, key) {
 
-    let users = [];
 
     value.map((element) => {
       if(!users.includes(element.userId)) {
@@ -36,7 +39,31 @@ router.get('/', function(req, res, next) {
     return result;
   }, []);
 
-  let order = lodash.orderBy(reduce, ['numberOfPlayers'], ['desc']);
+  let filter = reduce;
+  if(queryPlatform !== undefined || queryGenre !== undefined) {
+    if(queryPlatform !== undefined && queryGenre !== undefined) {
+      filter = lodash.filter(reduce, function(element) {
+        return lodash.startsWith(element.genre, queryGenre) &&
+        lodash.some(element.platforms, function (o) {
+          return lodash.startsWith(o ,queryPlatform);
+        });
+      });
+    }
+    else if(queryPlatform !== undefined) {
+      filter = lodash.filter(reduce, function(element) {
+        return lodash.some(element.platforms, function (o) {
+          return lodash.startsWith(o ,queryPlatform);
+        });
+      });
+    }
+    else {
+      filter = lodash.filter(reduce, function(element) {
+        return lodash.startsWith(element.genre, queryGenre);
+      });
+    }
+  }
+
+  let order = lodash.orderBy(filter, ['numberOfPlayers'], ['desc']);
 
   res.send(order);
 });
