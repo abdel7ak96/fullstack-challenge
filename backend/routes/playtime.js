@@ -7,17 +7,19 @@ var fs = require('fs');
 /* GET games that have the highest total playtime between users. */
 router.get('/', function(req, res, next) {
 
-  let games;
+  let queryGenre = req.query.genre;
+  let queryPlatform = req.query.platform;
+  let jsonObject;
 
   try {
     const jsonString = fs.readFileSync('./public/data/games.json');
-    games = JSON.parse(jsonString);
+    jsonObject = JSON.parse(jsonString);
   } catch (err) {
     console.log(err)
     return
   }
 
-  let group = lodash.groupBy(games.data, 'game');
+  let group = lodash.groupBy(jsonObject.data, 'game');
   let reduce = lodash.reduce(group, function(result, value, key) {
     let sum = 0;
     value.map((element) => {
@@ -29,12 +31,35 @@ router.get('/', function(req, res, next) {
       'genre': value[0].genre,
       'totalPlayTime': sum
     });
-    
     return result;
   }, []);
 
-  let order = lodash.orderBy(reduce, ['totalPlayTime'], ['desc']);
+  let filter = reduce;
+  if(queryPlatform !== undefined || queryGenre !== undefined) {
+    if(queryPlatform !== undefined && queryGenre !== undefined) {
+      filter = lodash.filter(reduce, function(element) {
+        return lodash.startsWith(element.genre, queryGenre) &&
+        lodash.some(element.platforms, function (o) {
+          return lodash.startsWith(o ,queryPlatform);
+        });
+      });
+    }
+    else if(queryPlatform !== undefined) {
+      filter = lodash.filter(reduce, function(element) {
+        return lodash.some(element.platforms, function (o) {
+          return lodash.startsWith(o ,queryPlatform);
+        });
+      });
+    }
+    else {
+      filter = lodash.filter(reduce, function(element) {
+        return lodash.startsWith(element.genre, queryGenre);
+      });
+    }
+  }
 
+  let order = lodash.orderBy(filter, ['totalPlayTime'], ['desc']);
+  
   res.send(order);
 });
 
