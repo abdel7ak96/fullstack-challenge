@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var lodash = require('lodash');
 
 var fs = require('fs');
 
@@ -15,7 +16,29 @@ router.get('/', function(req, res, next) {
     return
   }
 
-  res.send(games);
+  let group = lodash.groupBy(games.data, 'game');
+  let reduce = lodash.reduce(group, function(result, value, key) {
+
+    let users = [];
+
+    value.map((element) => {
+      if(!users.includes(element.userId)) {
+        users.push(element.userId);
+      }
+    })
+    result.push({
+      'game': key,
+      'platforms': value[0].platforms,
+      'genre': value[0].genre,
+      'numberOfPlayers': users.length
+    });
+    
+    return result;
+  }, []);
+
+  let order = lodash.orderBy(reduce, ['numberOfPlayers'], ['desc']);
+
+  res.send(order);
 });
 
 module.exports = router;
