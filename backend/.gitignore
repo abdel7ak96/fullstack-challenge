@@ -2,3 +2,6 @@
 
 # dependencies
 /node_modules
+
+# Endpoints testing using VS Code plugin REST Client
+/http-requests

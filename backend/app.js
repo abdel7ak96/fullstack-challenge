@@ -4,8 +4,33 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var playtimeRouter = require('./routes/playtime');
+var playersRouter = require('./routes/players');
+
+var fs = require('fs');
+
+function jsonReader(filePath, callback) {
+  fs.readFile(filePath, (err, fileData) => {
+    if (err) {
+      return callback && callback(err);
+    }
+    try {
+      const object = JSON.parse(fileData);
+      return callback && callback(null, object);
+    } catch (err) {
+      return callback && callback(err);
+    }
+  });
+}
+
+jsonReader('./public/data/games.json', (err, games) => {
+  if(err) {
+    console.log(err);
+  }
+  else {
+    console.log(games.data[0].game)
+  }
+})
 
 var app = express();
 
@@ -19,8 +44,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/select_top_by_playtime', playtimeRouter);
+app.use('/select_top_by_players', playersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
