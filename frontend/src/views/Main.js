@@ -23,10 +23,44 @@ function Main() {
   const [itemsByPlaytime, setItemsByPlayTime] = useState([]);
   const [itemsByPlayers, setItemsByPlayers] = useState([]);
 
-  const [playtimeGenre, setPlaytimeGenre] = useState();
-  const [playtimePlatform, setPlaytimePlatform] = useState();
-  const [playersGenre, setPlayersGenre] = useState();
-  const [playersPlatform, setPlayersPlatform] = useState();
+  const [playtimeGenre, setPlaytimeGenre] = useState("");
+  const [playtimePlatform, setPlaytimePlatform] = useState("");
+  const [playersGenre, setPlayersGenre] = useState("");
+  const [playersPlatform, setPlayersPlatform] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3100/select_top_by_playtime?"+
+    (playtimeGenre !== "" ? "genre="+playtimeGenre : "" )+
+    (playtimePlatform !== "" ? "platform="+playtimePlatform : ""), {
+      mode: "cors",
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setItemsByPlayTime(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }, [playtimeGenre, playtimePlatform]);
+
+  useEffect(() => {
+    fetch("http://localhost:3100/select_top_by_players?"+
+    (playersGenre !== "" ? "genre="+playersGenre : "" )+
+    (playersPlatform !== "" ? "platform="+playersPlatform : ""), {
+      mode: "cors",
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setItemsByPlayers(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }, [playersGenre, playersPlatform])
 
   useEffect(() => {
     fetch("http://localhost:3100/select_top_by_playtime", {
@@ -81,7 +115,9 @@ function Main() {
                   id="filter_genre_playtime"
                   label="Filter by genre"
                   variant="outlined"
-                  onChange={(event) => {}}
+                  onChange={(event) => {
+                    setPlaytimeGenre(event.target.value);
+                  }}
                 />
               </Box>
               <Box ml={1}>
@@ -91,6 +127,9 @@ function Main() {
                   id="filter_platform_playtime"
                   label="Filter by platform"
                   variant="outlined"
+                  onChange={(event) => {
+                    setPlaytimePlatform(event.target.value);
+                  }}
                 />
               </Box>
             </Box>
@@ -133,6 +172,9 @@ function Main() {
                   id="filter_genre_players"
                   label="Filter by genre"
                   variant="outlined"
+                  onChange={(event) => {
+                    setPlayersGenre(event.target.value);
+                  }}
                 />
               </Box>
               <Box ml={1}>
@@ -141,6 +183,9 @@ function Main() {
                   id="filter_platform_players"
                   label="Filter by platform"
                   variant="outlined"
+                  onChange={(event) => {
+                    setPlayersPlatform(event.target.value);
+                  }}
                 />
               </Box>
             </Box>
