@@ -73,18 +73,11 @@ function Main() {
 
   return (
     <Container maxWidth="md">
-      <Grid
-        container
-        spacing={5}
-        justifyContent="center"
-        alignItems="stretch"
-        direction="column"
-      >
+      <Grid container spacing={5} direction="column">
         <Grid item lg={12}>
+
           <Box my={2}>
-            <Typography variant="h4" component="h4">
-              Top games by playtime
-            </Typography>
+            <Typography variant="h4">Top games by playtime</Typography>
             <Box my={2} display="flex" justifyContent="flex-end">
               <Box>
                 <TextField
@@ -120,9 +113,7 @@ function Main() {
 
         <Grid item lg={12}>
           <Box my={2}>
-            <Typography variant="h4" component="h4">
-              Top games by number of players
-            </Typography>
+            <Typography variant="h4">Top games by number of players</Typography>
             <Box my={2} display="flex" justifyContent="flex-end">
               <Box>
                 <TextField
@@ -150,6 +141,7 @@ function Main() {
           </Box>
           <CustomPlayersTable heads={playersTableHeads} rows={itemsByPlayers} />
         </Grid>
+        
       </Grid>
     </Container>
   );
