@@ -1,25 +1,13 @@
 import React, { useState, useEffect, setError } from "react";
 import { Container, Grid, Typography, TextField, Box } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
+import CustomPlaytimeTable from "../components/CustomPlaytimeTable";
+import CustomPlayersTable from "../components/CustomPlayersTable";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+// Table head titles for parameters
+const playtimeTableHeads = ["Games", "Platforms", "Genre", "Total play time"];
+const playersTableHeads = ["Games", "Platforms", "Genre", "Number of players"];
 
 function Main() {
-  const classes = useStyles();
-
   const [itemsByPlaytime, setItemsByPlayTime] = useState([]);
   const [itemsByPlayers, setItemsByPlayers] = useState([]);
 
@@ -29,11 +17,14 @@ function Main() {
   const [playersPlatform, setPlayersPlatform] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3100/select_top_by_playtime?"+
-    (playtimeGenre !== "" ? "genre="+playtimeGenre : "" )+
-    (playtimePlatform !== "" ? "platform="+playtimePlatform : ""), {
-      mode: "cors",
-    })
+    fetch(
+      "http://localhost:3100/select_top_by_playtime?" +
+        (playtimeGenre !== "" ? "genre=" + playtimeGenre : "") +
+        (playtimePlatform !== "" ? "platform=" + playtimePlatform : ""),
+      {
+        mode: "cors",
+      }
+    )
       .then((res) => res.json())
       .then(
         (result) => {
@@ -46,11 +37,14 @@ function Main() {
   }, [playtimeGenre, playtimePlatform]);
 
   useEffect(() => {
-    fetch("http://localhost:3100/select_top_by_players?"+
-    (playersGenre !== "" ? "genre="+playersGenre : "" )+
-    (playersPlatform !== "" ? "platform="+playersPlatform : ""), {
-      mode: "cors",
-    })
+    fetch(
+      "http://localhost:3100/select_top_by_players?" +
+        (playersGenre !== "" ? "genre=" + playersGenre : "") +
+        (playersPlatform !== "" ? "platform=" + playersPlatform : ""),
+      {
+        mode: "cors",
+      }
+    )
       .then((res) => res.json())
       .then(
         (result) => {
@@ -60,7 +54,7 @@ function Main() {
           console.log(error);
         }
       );
-  }, [playersGenre, playersPlatform])
+  }, [playersGenre, playersPlatform]);
 
   useEffect(() => {
     fetch("http://localhost:3100/select_top_by_playtime", {
@@ -76,7 +70,7 @@ function Main() {
           setError(error);
         }
       );
-      
+
     fetch("http://localhost:3100/select_top_by_players", {
       mode: "cors",
     })
@@ -90,7 +84,6 @@ function Main() {
           setError(error);
         }
       );
-    
   }, []);
 
   return (
@@ -112,18 +105,6 @@ function Main() {
                 <TextField
                   m={2}
                   size="small"
-                  id="filter_genre_playtime"
-                  label="Filter by genre"
-                  variant="outlined"
-                  onChange={(event) => {
-                    setPlaytimeGenre(event.target.value);
-                  }}
-                />
-              </Box>
-              <Box ml={1}>
-                <TextField
-                  m={2}
-                  size="small"
                   id="filter_platform_playtime"
                   label="Filter by platform"
                   variant="outlined"
@@ -132,32 +113,21 @@ function Main() {
                   }}
                 />
               </Box>
+              <Box ml={1}>
+                <TextField
+                  m={2}
+                  size="small"
+                  id="filter_genre_playtime"
+                  label="Filter by genre"
+                  variant="outlined"
+                  onChange={(event) => {
+                    setPlaytimeGenre(event.target.value);
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Games</TableCell>
-                  <TableCell align="right">Platforms</TableCell>
-                  <TableCell align="right">Genre</TableCell>
-                  <TableCell align="right">Total play time</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {itemsByPlaytime.map((row) => (
-                  <TableRow key={row.game}>
-                    <TableCell component="th" scope="row">
-                      {row.game}
-                    </TableCell>
-                    <TableCell align="right">{row.platforms}</TableCell>
-                    <TableCell align="right">{row.genre}</TableCell>
-                    <TableCell align="right">{row.totalPlayTime}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <CustomPlaytimeTable heads={playtimeTableHeads} rows={itemsByPlaytime} />
         </Grid>
 
         <Grid item lg={12}>
@@ -169,17 +139,6 @@ function Main() {
               <Box>
                 <TextField
                   size="small"
-                  id="filter_genre_players"
-                  label="Filter by genre"
-                  variant="outlined"
-                  onChange={(event) => {
-                    setPlayersGenre(event.target.value);
-                  }}
-                />
-              </Box>
-              <Box ml={1}>
-                <TextField
-                  size="small"
                   id="filter_platform_players"
                   label="Filter by platform"
                   variant="outlined"
@@ -188,32 +147,20 @@ function Main() {
                   }}
                 />
               </Box>
+              <Box ml={1}>
+                <TextField
+                  size="small"
+                  id="filter_genre_players"
+                  label="Filter by genre"
+                  variant="outlined"
+                  onChange={(event) => {
+                    setPlayersGenre(event.target.value);
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Game</TableCell>
-                  <TableCell align="right">Platforms</TableCell>
-                  <TableCell align="right">Genre</TableCell>
-                  <TableCell align="right">Number of players</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {itemsByPlayers.map((row) => (
-                  <TableRow key={row.game}>
-                    <TableCell component="th" scope="row">
-                      {row.game}
-                    </TableCell>
-                    <TableCell align="right">{row.platforms}</TableCell>
-                    <TableCell align="right">{row.genre}</TableCell>
-                    <TableCell align="right">{row.numberOfPlayers}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <CustomPlayersTable heads={playersTableHeads} rows={itemsByPlayers} />
         </Grid>
       </Grid>
     </Container>
