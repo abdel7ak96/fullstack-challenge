@@ -1,27 +1,22 @@
 var express = require('express');
 var router = express.Router();
 var lodash = require('lodash');
+var cors = require('cors');
+var readData = require('../middlewares/readData');
 
-var fs = require('fs');
+// Access-Control-Allow-Origin setting
+var corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200
+}
 
 /* GET games that have the highest total playtime between users. */
-router.get('/', function(req, res, next) {
-
-  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+router.get('/', readData, cors(corsOptions), function(req, res, next) {
 
   let queryGenre = req.query.genre;
   let queryPlatform = req.query.platform;
-  let jsonObject;
 
-  try {
-    const jsonString = fs.readFileSync('./public/data/games.json');
-    jsonObject = JSON.parse(jsonString);
-  } catch (err) {
-    console.log(err)
-    return
-  }
-
-  let group = lodash.groupBy(jsonObject.data, 'game');
+  let group = lodash.groupBy(req.jsonObject.data, 'game');
   let reduce = lodash.reduce(group, function(result, value, key) {
     let sum = 0;
     value.map((element) => {
