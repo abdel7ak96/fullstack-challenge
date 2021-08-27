@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
   if(queryPlatform !== undefined || queryGenre !== undefined) {
     if(queryPlatform !== undefined && queryGenre !== undefined) {
       filter = lodash.filter(reduce, function(element) {
-        return lodash.startsWith(element.genre, queryGenre) &&
+        return lodash.startsWith(lodash.toLower(element.genre), lodash.toLower(queryGenre)) &&
         lodash.some(element.platforms, function (o) {
           return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });

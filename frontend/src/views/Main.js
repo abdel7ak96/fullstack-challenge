@@ -1,16 +1,20 @@
 import React, { useState, useEffect, setError } from "react";
 import { Container, Grid, Typography, TextField, Box } from "@material-ui/core";
+
+// Custom modules
 import CustomPlaytimeTable from "../components/CustomPlaytimeTable";
 import CustomPlayersTable from "../components/CustomPlayersTable";
 
 // Table head titles for parameters
-const playtimeTableHeads = ["Games", "Platforms", "Genre", "Total play time"];
-const playersTableHeads = ["Games", "Platforms", "Genre", "Number of players"];
+const playtimeTableHeads = ["Game", "Platforms", "Genre", "Total play time"];
+const playersTableHeads = ["Game", "Platforms", "Genre", "Number of players"];
 
 function Main() {
+  // Fetched data states
   const [itemsByPlaytime, setItemsByPlayTime] = useState([]);
   const [itemsByPlayers, setItemsByPlayers] = useState([]);
 
+  // Filter inputs states
   const [playtimeGenre, setPlaytimeGenre] = useState("");
   const [playtimePlatform, setPlaytimePlatform] = useState("");
   const [playersGenre, setPlayersGenre] = useState("");
@@ -20,7 +24,7 @@ function Main() {
     fetch(
       "http://localhost:3100/select_top_by_playtime?" +
         (playtimeGenre !== "" ? "genre=" + playtimeGenre : "") +
-        (playtimePlatform !== "" ? "platform=" + playtimePlatform : ""),
+        (playtimePlatform !== "" ? "&platform=" + playtimePlatform : ""),
       {
         mode: "cors",
       }
@@ -31,7 +35,7 @@ function Main() {
           setItemsByPlayTime(result);
         },
         (error) => {
-          console.log(error);
+          setError(error);
         }
       );
   }, [playtimeGenre, playtimePlatform]);
@@ -40,7 +44,7 @@ function Main() {
     fetch(
       "http://localhost:3100/select_top_by_players?" +
         (playersGenre !== "" ? "genre=" + playersGenre : "") +
-        (playersPlatform !== "" ? "platform=" + playersPlatform : ""),
+        (playersPlatform !== "" ? "&platform=" + playersPlatform : ""),
       {
         mode: "cors",
       }
@@ -51,7 +55,7 @@ function Main() {
           setItemsByPlayers(result);
         },
         (error) => {
-          console.log(error);
+          setError(error);
         }
       );
   }, [playersGenre, playersPlatform]);
@@ -66,7 +70,6 @@ function Main() {
           setItemsByPlayTime(result);
         },
         (error) => {
-          console.log("Error on by time played");
           setError(error);
         }
       );
@@ -80,7 +83,6 @@ function Main() {
           setItemsByPlayers(result);
         },
         (error) => {
-          console.log("Error on by players");
           setError(error);
         }
       );
@@ -127,7 +129,10 @@ function Main() {
               </Box>
             </Box>
           </Box>
-          <CustomPlaytimeTable heads={playtimeTableHeads} rows={itemsByPlaytime} />
+          <CustomPlaytimeTable
+            heads={playtimeTableHeads}
+            rows={itemsByPlaytime}
+          />
         </Grid>
 
         <Grid item lg={12}>
