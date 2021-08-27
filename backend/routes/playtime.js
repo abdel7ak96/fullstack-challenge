@@ -42,20 +42,20 @@ router.get('/', function(req, res, next) {
       filter = lodash.filter(reduce, function(element) {
         return lodash.startsWith(element.genre, queryGenre) &&
         lodash.some(element.platforms, function (o) {
-          return lodash.startsWith(o ,queryPlatform);
+          return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });
       });
     }
     else if(queryPlatform !== undefined) {
       filter = lodash.filter(reduce, function(element) {
         return lodash.some(element.platforms, function (o) {
-          return lodash.startsWith(o ,queryPlatform);
+          return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });
       });
     }
     else {
       filter = lodash.filter(reduce, function(element) {
-        return lodash.startsWith(element.genre, queryGenre);
+        return lodash.startsWith(lodash.toLower(element.genre), lodash.toLower(queryGenre));
       });
     }
   }

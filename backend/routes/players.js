@@ -9,23 +9,21 @@ router.get('/', function(req, res, next) {
 
   res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
 
-  let games;
+  let jsonObject;
   let queryGenre = req.query.genre;
   let queryPlatform = req.query.platform;
   let users = [];
 
   try {
     const jsonString = fs.readFileSync('./public/data/games.json');
-    games = JSON.parse(jsonString);
+    jsonObject = JSON.parse(jsonString);
   } catch (err) {
     console.log(err)
     return
   }
 
-  let group = lodash.groupBy(games.data, 'game');
+  let group = lodash.groupBy(jsonObject.data, 'game');
   let reduce = lodash.reduce(group, function(result, value, key) {
-
-
     value.map((element) => {
       if(!users.includes(element.userId)) {
         users.push(element.userId);
@@ -47,20 +45,20 @@ router.get('/', function(req, res, next) {
       filter = lodash.filter(reduce, function(element) {
         return lodash.startsWith(element.genre, queryGenre) &&
         lodash.some(element.platforms, function (o) {
-          return lodash.startsWith(o ,queryPlatform);
+          return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });
       });
     }
     else if(queryPlatform !== undefined) {
       filter = lodash.filter(reduce, function(element) {
         return lodash.some(element.platforms, function (o) {
-          return lodash.startsWith(o ,queryPlatform);
+          return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });
       });
     }
     else {
       filter = lodash.filter(reduce, function(element) {
-        return lodash.startsWith(element.genre, queryGenre);
+        return lodash.startsWith(lodash.toLower(element.genre), lodash.toLower(queryGenre));
       });
     }
   }
