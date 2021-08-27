@@ -7,6 +7,8 @@ var fs = require('fs');
 /* GET games with the highest number of unique players */
 router.get('/', function(req, res, next) {
 
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
   let games;
   let queryGenre = req.query.genre;
   let queryPlatform = req.query.platform;

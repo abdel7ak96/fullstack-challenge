@@ -7,6 +7,8 @@ var fs = require('fs');
 /* GET games that have the highest total playtime between users. */
 router.get('/', function(req, res, next) {
 
+  res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
   let queryGenre = req.query.genre;
   let queryPlatform = req.query.platform;
   let jsonObject;
