@@ -9,6 +9,27 @@ import CustomPlayersTable from "../components/CustomPlayersTable";
 const playtimeTableHeads = ["Game", "Platforms", "Genre", "Total play time"];
 const playersTableHeads = ["Game", "Platforms", "Genre", "Number of players"];
 
+// The function used to perform fetching at first rendering (mounting) and then subsequent state changes
+const CustomFetch = (url, stateSetter, param = { genre: "", platform: "" }) => {
+  fetch(
+    url +
+      (param.genre !== "" ? "genre=" + param.genre : "") +
+      (param.platform !== "" ? "&platform=" + param.platform : ""),
+    {
+      mode: "cors",
+    }
+  )
+    .then((res) => res.json())
+    .then(
+      (result) => {
+        stateSetter(result);
+      },
+      (error) => {
+        setError(error);
+      }
+    );
+};
+
 function Main() {
   // Fetched data states
   const [itemsByPlaytime, setItemsByPlayTime] = useState([]);
@@ -20,73 +41,35 @@ function Main() {
   const [playersGenre, setPlayersGenre] = useState("");
   const [playersPlatform, setPlayersPlatform] = useState("");
 
+  // First mount state hook
   useEffect(() => {
-    fetch(
-      "http://localhost:3100/select_top_by_playtime?" +
-        (playtimeGenre !== "" ? "genre=" + playtimeGenre : "") +
-        (playtimePlatform !== "" ? "&platform=" + playtimePlatform : ""),
-      {
-        mode: "cors",
-      }
-    )
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setItemsByPlayTime(result);
-        },
-        (error) => {
-          setError(error);
-        }
-      );
+    CustomFetch(
+      "http://localhost:3100/select_top_by_playtime",
+      setItemsByPlayTime
+    );
+    CustomFetch(
+      "http://localhost:3100/select_top_by_players",
+      setItemsByPlayers
+    );
+  }, []);
+
+  // Playtime table filters state hook
+  useEffect(() => {
+    CustomFetch(
+      "http://localhost:3100/select_top_by_playtime?",
+      setItemsByPlayTime,
+      { genre: playtimeGenre, platform: playtimePlatform }
+    );
   }, [playtimeGenre, playtimePlatform]);
 
+  // Players table filters state hook
   useEffect(() => {
-    fetch(
-      "http://localhost:3100/select_top_by_players?" +
-        (playersGenre !== "" ? "genre=" + playersGenre : "") +
-        (playersPlatform !== "" ? "&platform=" + playersPlatform : ""),
-      {
-        mode: "cors",
-      }
-    )
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setItemsByPlayers(result);
-        },
-        (error) => {
-          setError(error);
-        }
-      );
+    CustomFetch(
+      "http://localhost:3100/select_top_by_players?",
+      setItemsByPlayers,
+      { genre: playersGenre, platform: playersPlatform }
+    );
   }, [playersGenre, playersPlatform]);
-
-  useEffect(() => {
-    fetch("http://localhost:3100/select_top_by_playtime", {
-      mode: "cors",
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setItemsByPlayTime(result);
-        },
-        (error) => {
-          setError(error);
-        }
-      );
-
-    fetch("http://localhost:3100/select_top_by_players", {
-      mode: "cors",
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setItemsByPlayers(result);
-        },
-        (error) => {
-          setError(error);
-        }
-      );
-  }, []);
 
   return (
     <Container maxWidth="md">
