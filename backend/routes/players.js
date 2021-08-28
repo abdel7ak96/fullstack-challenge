@@ -15,10 +15,10 @@ router.get('/', readData, cors(corsOptions), function(req, res, next) {
   
   let queryGenre = req.query.genre;
   let queryPlatform = req.query.platform;
-  let users = [];
-
+  
   let group = lodash.groupBy(req.jsonObject.data, 'game');
   let reduce = lodash.reduce(group, function(result, value, key) {
+    let users = [];
     value.map((element) => {
       if(!users.includes(element.userId)) {
         users.push(element.userId);
