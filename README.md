@@ -36,7 +36,7 @@ npm start
 ```
 The backend is set to run on port **3100** if no port is provided through environments variables
 
-### from frontend folder:
+### then frontend folder:
 ```
 yarn start
 ```
@@ -47,8 +47,8 @@ npm start
 
 ## Tests
 ### Implemented tests
-- Test the root path response, it should return a welcome HTML page
-- Test both endpoints `/select_top_by_playtime` and `/select_top_by_players`
+- Test the root path response, it should return a welcome HTML page.
+- Test both endpoints `/select_top_by_playtime` and `/select_top_by_players`, they both should respond with json.
 
 ## Frameworks
 - [React](https://reactjs.org)
