@@ -37,24 +37,23 @@ router.get('/', readData, cors(corsOptions), function(req, res, next) {
   let filter = reduce;
   if(queryPlatform !== undefined || queryGenre !== undefined) {
     if(queryPlatform !== undefined && queryGenre !== undefined) {
-      console.log("this should run");
       filter = lodash.filter(reduce, function(element) {
-        return lodash.startsWith(lodash.toLower(element.genre), lodash.toLower(queryGenre)) &&
+        return lodash.includes(lodash.toLower(element.genre), lodash.toLower(queryGenre)) &&
         lodash.some(element.platforms, function (o) {
-          return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
+          return lodash.includes(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });
       });
     }
     else if(queryPlatform !== undefined) {
       filter = lodash.filter(reduce, function(element) {
         return lodash.some(element.platforms, function (o) {
-          return lodash.startsWith(lodash.toLower(o) ,lodash.toLower(queryPlatform));
+          return lodash.includes(lodash.toLower(o) ,lodash.toLower(queryPlatform));
         });
       });
     }
     else {
       filter = lodash.filter(reduce, function(element) {
-        return lodash.startsWith(lodash.toLower(element.genre), lodash.toLower(queryGenre));
+        return lodash.includes(lodash.toLower(element.genre), lodash.toLower(queryGenre));
       });
     }
   }
