@@ -39,7 +39,7 @@ function CustomPlaytimeTable({ heads, rows }) {
                 {row.game}
               </TableCell>
               <TableCell align="right">
-                {row.platforms.map((word) => word + " ")}
+                {row.platforms.map((word, index) => index === 0 ? word : " | "+word)}
               </TableCell>
               <TableCell align="right">{row.genre}</TableCell>
               <TableCell align="right">{row.totalPlayTime}</TableCell>
