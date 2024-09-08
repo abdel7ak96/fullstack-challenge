@@ -1,15 +1,5 @@
 # Think-it Web Challenge: Gaming Charts - Junior 💥
 
-<img src="readme-assets/profile-pic.png" width="150px" align="right" style="margin: 10px">
-
-## My personal information
-**Full name:** Abdelhak RAHMOUNI <br>
-**Email:** rahmouni.abdelhak.1@gmail.com <br>
-**Phone-number:** +213 780 48 96 07 <br>
-**website:** http://noisy96.github.io <br>
-**Interview date:** 24/08/2021
-
-
 ## The problem
 The goal is to create a SPA that enables the user to search for the top games by playtime or by number of unique users.
 
